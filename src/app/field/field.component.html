@@ -1,0 +1,5 @@
+<div id="field">
+    <app-ball *ngFor="let ball of engine.getBalls()" [ball]="ball"></app-ball>
+    <app-player *ngFor="let player of engine.getPlayers()" [player]="player"></app-player>
+    <app-player-field *ngFor="let player of engine.getPlayers()" [player]="player"></app-player-field>
+</div>
