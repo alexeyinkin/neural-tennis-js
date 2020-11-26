@@ -1,25 +1,30 @@
 import * as tf from '@tensorflow/tfjs';
 import * as tfvis from '@tensorflow/tfjs-vis';
-import { Sequential, Tensor2D } from '@tensorflow/tfjs';
+import { Sequential } from '@tensorflow/tfjs';
+import { DenseLayerArgs } from '@tensorflow/tfjs-layers/dist/layers/core';
 
 import AbstractCatchModel from './AbstractCatchModel';
+import AiModelInWorker from './worker/AiModelInWorker';
+import AiModelInWorkerListener from './worker/AiModelInWorkerListener';
 import Ball from './Ball';
 import BallKickedListener from './BallKickedListener';
 import BallLostListener from './BallLostListener';
 import Engine from './Engine';
+import MyTensorFlowLib from './MyTensorFlowLib';
 import ObjectMoveListener from './ObjectMoveListener';
 import PhysicalObject from './PhysicalObject';
 import Player from './Player';
 import PointInterface from './VectorInterface';
+import TensorDump from './TensorDump';
 import Vector from './Vector';
 
-export default class NeuralCatchModel extends AbstractCatchModel implements BallLostListener, BallKickedListener, ObjectMoveListener {
+export default class NeuralCatchModel extends AbstractCatchModel implements BallLostListener, BallKickedListener, ObjectMoveListener, AiModelInWorkerListener {
     private expectedPositions = new Map<bigint, Vector>();
     private activeBallsData = new Map<bigint, number[][]>();
 
-    private model: Sequential;
-    private inputHistory = tf.tensor2d([], [0, 4]);
-    private labelHistory = tf.tensor2d([], [0, 1]);
+    private readonly model: Sequential;
+    private inputHistory: number[][] = [];
+    private labelHistory: number[][] = [];
 
     private errors: number[] = [];
     private rollingErrorsCount = [1, 5];
@@ -27,14 +32,21 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
 
     private lossValues: number[] = [];
     private lossPlotValues: PointInterface[] = [];
+    private readonly layers: DenseLayerArgs[] = [
+        {units: 10, activation: 'relu', inputShape: [4]},
+        {units: 10, activation: 'relu'},
+        {units:  1, activation: 'relu'}
+    ];
+
+    private modelInWorker: AiModelInWorker;
 
     public constructor(engine: Engine, player: Player) {
         super(engine, player);
 
         this.model = tf.sequential();
-        this.model.add(tf.layers.dense({units: 10, activation: 'relu', inputShape: [4]}));
-        this.model.add(tf.layers.dense({units: 10, activation: 'relu'}));
-        this.model.add(tf.layers.dense({units:  1, activation: 'relu'}));
+        for (const layer of this.layers) {
+            this.model.add(tf.layers.dense(layer));
+        }
 
         this.model.compile({
             optimizer: tf.train.adam(),
@@ -46,12 +58,15 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
             this.rollingErrorsPlotValues.set(n, []);
         }
 
+        this.modelInWorker = new AiModelInWorker();
+        this.modelInWorker.addListener(this);
+        this.modelInWorker.create(this.layers, MyTensorFlowLib.exportWeights(this.model));
+
         engine.addBallLostListener(this);
         engine.addBallKickedListener(this);
         engine.addObjectMoveListener(this);
 
         this.plotLoss();
-        this.plotWeights();
     }
 
     public getPosition(ball: Ball): Vector|undefined {
@@ -136,38 +151,9 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
     private addTrainingData(inputsArray: number[][], labelScalar: number): void {
         if (inputsArray.length === 0) return;
 
-        let inputs = tf.tensor2d(inputsArray);
-        let labels = tf.tensor2d(Array(inputsArray.length).fill(labelScalar), [inputsArray.length, 1]);
-
-        let inputHistory = tf.concat2d([this.inputHistory, inputs], 0);
-        let labelHistory = tf.concat2d([this.labelHistory, labels], 0);
-
-        tf.dispose(this.inputHistory);
-        tf.dispose(this.labelHistory);
-
-        this.inputHistory = inputHistory;
-        this.labelHistory = labelHistory;
-        this.fit(this.inputHistory, this.labelHistory);
-
-        this.plotWeights();
-    }
-
-    private fit(inputs: Tensor2D, labels: Tensor2D): void {
-        let opts = {
-            shuffle: true,
-            callbacks: {
-                onEpochEnd: (epochIndex: number, stats: any) => this.onEpochEnd(epochIndex, stats),
-            },
-        };
-
-        this.model.fit(inputs, labels, opts);
-    }
-
-    private onEpochEnd(epochIndex: number, stats: any): void {
-        let loss = stats.loss;
-        this.lossValues.push(loss);
-        this.lossPlotValues.push({x: this.lossPlotValues.length, y: Math.log10(loss)});
-        this.plotLoss();
+        this.inputHistory = this.inputHistory.concat(inputsArray);
+        this.labelHistory = this.labelHistory.concat([Array(inputsArray.length).fill(labelScalar)]);
+        this.modelInWorker.fit(this.inputHistory, this.labelHistory);
     }
 
     private updateRollingErrors(): void {
@@ -216,31 +202,6 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
         tfvis.render.linechart(container, data, opts);
     }
 
-    private plotWeights(): void {
-        const container = {tab: 'Player ' + this.getPlayer().getId(), name: 'Weights'};
-        const data = {values: this.getWeights()};
-        const opts = {
-            height: 400,
-        };
-
-        tfvis.render.heatmap(container, data, opts);
-    }
-
-    private getWeights(): number[][] {
-        let result = [];
-
-        for (const layer of this.model.layers) {
-            let layerWeights: number[] = [];
-            for (const weightTensor of layer.getWeights()) {
-                layerWeights = layerWeights.concat(Array.from(weightTensor.dataSync()));
-            }
-
-            result.push(layerWeights);
-        }
-
-        return result;
-    }
-
     public onObjectMove(obj: PhysicalObject): void {
         if (obj instanceof Ball) {
             this.onBallMove(obj);
@@ -252,5 +213,14 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
         if (Math.sign(ball.getY() - catchLineY) !== Math.sign(ball.getPrevY() - catchLineY)) {
             this.extrapolateBallAndLearn(ball);
         }
+    }
+
+    public onFitComplete(callbackData: any, newWeights: TensorDump[][]): void {
+        MyTensorFlowLib.importWeights(this.model, newWeights);
+
+        let loss = callbackData.loss;
+        this.lossValues.push(loss);
+        this.lossPlotValues.push({x: this.lossPlotValues.length, y: Math.log10(loss)});
+        this.plotLoss();
     }
 }

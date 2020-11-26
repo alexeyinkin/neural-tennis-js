@@ -155,7 +155,7 @@ export default class Engine {
         let model = new AiPlayerControlModel(this, player);
 
         model.setCatchModel(new ExtrapolationCatchModel(this, player));
-        model.setKickModel(new FrontKickModel(this, player));
+        model.setKickModel(new RandomKickModel(this, player));
 
         player.addControlModel(model);
     }
@@ -164,7 +164,7 @@ export default class Engine {
         let model = new AiPlayerControlModel(this, player);
 
         model.setCatchModel(new NeuralCatchModel(this, player));
-        model.setKickModel(new FrontKickModel(this, player));
+        model.setKickModel(new RandomKickModel(this, player));
 
         player.addControlModel(model);
     }
