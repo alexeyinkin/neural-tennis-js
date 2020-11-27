@@ -50,8 +50,12 @@ export default class Engine {
             PhysicsEnum.BALL_MAX_SPEED,
         );
 
-        ball.setX((PhysicsEnum.FIELD_WIDTH - ball.getWidth()) / 2);
-        ball.setY((PhysicsEnum.FIELD_HEIGHT - ball.getHeight()) / 2);
+        ball.setInitialPosition(
+            new Vector(
+                (PhysicsEnum.FIELD_WIDTH - ball.getWidth()) / 2,
+                (PhysicsEnum.FIELD_HEIGHT - ball.getHeight()) / 2,
+            )
+        );
 
         let dx = Math.random() * 10 - 5;
         let dy = (Math.random() + 2) * 5 * Math.sign(Math.random() - .5);
@@ -99,8 +103,12 @@ export default class Engine {
         let player = this.createPlayer(new Color(255, 0, 0));
         player.setName('Red');
 
-        player.setX((PhysicsEnum.FIELD_WIDTH - PhysicsEnum.PLAYER_WIDTH) / 2);
-        player.setY(PhysicsEnum.PLAYER_OFFSET);
+        player.setInitialPosition(
+            new Vector(
+                (PhysicsEnum.FIELD_WIDTH - PhysicsEnum.PLAYER_WIDTH) / 2,
+                PhysicsEnum.PLAYER_OFFSET,
+            )
+        );
 
         player.setMinX(0);
         player.setMaxRightX(PhysicsEnum.FIELD_WIDTH);

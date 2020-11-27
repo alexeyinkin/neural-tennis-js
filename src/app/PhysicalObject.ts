@@ -71,6 +71,10 @@ export default class PhysicalObject {
 
     public setPosition(position: Vector): void {
         this.position = position;
+    }
+
+    public setInitialPosition(position: Vector): void {
+        this.position = position;
         this.prevPosition = position;
     }
 

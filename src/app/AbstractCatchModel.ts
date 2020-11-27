@@ -33,7 +33,7 @@ export default class AbstractCatchModel {
     public getCatchLineY(): number {
         // TODO: A better way to generalize this line. Add lose area to players and check its location?
         if (this.getPlayer().getMinY()) {
-            return this.getEngine().getFieldHeight() - AbstractCatchModel.DEFAULT_CATCH_LINE_OFFSET; // Bottom player.
+            return this.getEngine().getFieldHeight() - AbstractCatchModel.DEFAULT_CATCH_LINE_OFFSET - this.getPlayer().getHeight(); // Bottom player.
         }
 
         return AbstractCatchModel.DEFAULT_CATCH_LINE_OFFSET; // Top player.
