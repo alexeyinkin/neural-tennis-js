@@ -11,14 +11,14 @@ body {
     margin-right: .5em;
 }
 
-button.my-toggle {
+button.my-button {
     background-color: rgba(0, 0, 0, .05);
     border: $buttonBorder;
     border-left: none;
     cursor: pointer;
 }
 
-*:first-child > button.my-toggle {
+*:first-child > button.my-button {
     border-left: $buttonBorder;
 }
 

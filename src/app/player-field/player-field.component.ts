@@ -65,7 +65,6 @@ export default class PlayerFieldComponent {
 
     @HostListener('click')
     private onFieldClick(): void {
-        console.log('Field clicked');
         this.player.switchToNextControlModel();
     }
 

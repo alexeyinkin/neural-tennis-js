@@ -1,0 +1,11 @@
+<div class="my-button-group">
+    <button
+        class="my-button"
+        (click)="handleSave()"
+    >Save</button>
+    <button
+        class="my-button"
+        (click)="file.click()"
+    >Load</button>
+</div>
+<input type="file" (change)="handleFileSelected(file)" style="display:none" #file/>

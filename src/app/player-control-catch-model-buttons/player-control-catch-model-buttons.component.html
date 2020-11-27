@@ -1,7 +1,15 @@
-<app-player-control-catch-model-button
-    *ngFor="let catchModel of model.getCatchModels()"
-    [player]="player"
-    [model]="model"
-    [catchModel]="catchModel"
+<div class="my-button-group">
+    <app-player-control-catch-model-button
+        *ngFor="let catchModel of model.getCatchModels()"
+        [player]="player"
+        [model]="model"
+        [catchModel]="catchModel"
+    >
+    </app-player-control-catch-model-button>
+</div>
+
+<app-player-control-neural
+    *ngIf="model.getCatchModel().getName() === 'neural'"
+    [model]="$any(model.getCatchModel())"
 >
-</app-player-control-catch-model-button>
+</app-player-control-neural>

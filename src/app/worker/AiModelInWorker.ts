@@ -18,7 +18,6 @@ export default class AiModelInWorker {
     }
 
     private handleMessage(data: ResponseMessageInterface): void {
-        console.log(data);
         switch (data.message) {
             case ResponseMessageEnum.FIT_COMPLETE:
                 this.onFitComplete(data as FitCompleteResponseMessage);
@@ -41,6 +40,15 @@ export default class AiModelInWorker {
             command:        CommandEnum.CREATE,
             layers:         denseLayerArgs,
             initialWeights: initialWeights,
+        };
+
+        this.postMessage(request);
+    }
+
+    public setWeights(weights: TensorDump[][]): void {
+        const request = {
+            command: CommandEnum.SET_WEIGHTS,
+            weights: weights,
         };
 
         this.postMessage(request);

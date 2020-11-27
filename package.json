@@ -21,6 +21,8 @@
         "@angular/router": "~11.0.0",
         "@tensorflow/tfjs": "^2.7.0",
         "@tensorflow/tfjs-vis": "^1.4.3",
+        "@types/file-saver": "^2.0.1",
+        "file-saver": "^2.0.5",
         "rxjs": "~6.6.0",
         "tslib": "^2.0.0",
         "zone.js": "~0.10.2"

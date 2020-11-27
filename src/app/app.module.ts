@@ -16,6 +16,7 @@ import { PlayerControlCatchModelButtonComponent } from './player-control-catch-m
 import { PlayerControlKickModelButtonComponent } from './player-control-kick-model-button/player-control-kick-model-button.component';
 import { PlayerControlKickModelButtonsComponent } from './player-control-kick-model-buttons/player-control-kick-model-buttons.component';
 import { PlayerControlManualComponent } from './player-control-manual/player-control-manual.component';
+import { PlayerControlNeuralComponent } from './player-control-neural/player-control-neural.component';
 
 @NgModule({
     declarations: [
@@ -33,6 +34,7 @@ import { PlayerControlManualComponent } from './player-control-manual/player-con
         PlayerControlKickModelButtonComponent,
         PlayerControlKickModelButtonsComponent,
         PlayerControlManualComponent,
+        PlayerControlNeuralComponent,
     ],
     imports: [
         BrowserModule,

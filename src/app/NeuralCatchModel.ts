@@ -4,6 +4,7 @@ import { Sequential } from '@tensorflow/tfjs';
 import { DenseLayerArgs } from '@tensorflow/tfjs-layers/dist/layers/core';
 
 import AbstractCatchModel from './AbstractCatchModel';
+import AiModelDump from './AiModelDump';
 import AiModelInWorker from './worker/AiModelInWorker';
 import AiModelInWorkerListener from './worker/AiModelInWorkerListener';
 import Ball from './Ball';
@@ -19,6 +20,8 @@ import TensorDump from './TensorDump';
 import Vector from './Vector';
 
 export default class NeuralCatchModel extends AbstractCatchModel implements BallLostListener, BallKickedListener, ObjectMoveListener, AiModelInWorkerListener {
+    private static DUMP_NAME = 'NeuralCatchModel';
+
     private expectedPositions = new Map<bigint, Vector>();
     private activeBallsData = new Map<bigint, number[][]>();
 
@@ -156,12 +159,18 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
         this.addTrainingData(ballDataInputs, this.getEngine().normalizeWidth(x));
     }
 
-    private addTrainingData(inputsArray: number[][], labelScalar: number): void {
-        if (inputsArray.length === 0) return;
+    private addTrainingData(inputs: number[][], labelScalar: number): void {
+        if (inputs.length === 0) return;
 
-        this.inputHistory = this.inputHistory.concat(inputsArray);
-        this.labelHistory = this.labelHistory.concat([Array(inputsArray.length).fill(labelScalar)]);
+        this.inputHistory = this.inputHistory.concat(inputs);
+        this.labelHistory = this.labelHistory.concat([Array(inputs.length).fill(labelScalar)]);
         this.modelInWorker.fit(this.inputHistory, this.labelHistory);
+    }
+
+    private replaceTrainingDataAndWeights(inputs: number[][], labels: number[][], weights: TensorDump[][]): void {
+        this.inputHistory = inputs;
+        this.labelHistory = labels;
+        this.modelInWorker.setWeights(weights);
     }
 
     private updateRollingErrors(): void {
@@ -230,5 +239,39 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
         this.lossValues.push(loss);
         this.lossPlotValues.push({x: this.lossPlotValues.length, y: Math.log10(loss)});
         this.plotLoss();
+    }
+
+    public export(): AiModelDump {
+        return {
+            name:       NeuralCatchModel.DUMP_NAME,
+            shape:      this.getShape(),
+            inputs:     this.inputHistory,
+            labels:     this.labelHistory,
+            weights:    MyTensorFlowLib.exportWeights(this.model),
+        };
+    }
+
+    public import(dump: AiModelDump): boolean {
+        if (dump.name !== NeuralCatchModel.DUMP_NAME) {
+            return false;
+        }
+
+        if (JSON.stringify(dump.shape) !== JSON.stringify(this.getShape())) {
+            return false;
+        }
+
+        this.replaceTrainingDataAndWeights(dump.inputs, dump.labels, dump.weights);
+        return true;
+    }
+
+    private getShape(): number[] {
+        let result = [(this.layers[0].inputShape as number[])[0]];
+
+        for (const layer of this.layers) {
+            result.push(layer.units);
+        }
+
+        result.push(1);
+        return result;
     }
 }

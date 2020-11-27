@@ -7,6 +7,7 @@ import FitRequestMessageInterface from './FitRequestMessageInterface';
 import MyTensorFlowLib from '../MyTensorFlowLib';
 import RequestMessageInterface from './RequestMessageInterface';
 import ResponseMessageEnum from './ResponseMessageEnum';
+import SetWeightsRequestMessageInterface from "./SetWeightsRequestMessageInterface";
 
 export default class AiModelWorkerController {
     private model?: Sequential;
@@ -14,10 +15,13 @@ export default class AiModelWorkerController {
     private nextResponseId: bigint = 1n;
 
     public handleMessage(message: RequestMessageInterface): void {
-        console.log(message);
         switch (message.command) {
             case CommandEnum.CREATE:
                 this.create(message as CreateRequestMessageInterface);
+                break;
+
+            case CommandEnum.SET_WEIGHTS:
+                this.setWeights(message as SetWeightsRequestMessageInterface);
                 break;
 
             case CommandEnum.FIT:
@@ -42,10 +46,13 @@ export default class AiModelWorkerController {
         MyTensorFlowLib.importWeights(this.model, message.initialWeights);
     }
 
+    private setWeights(message: SetWeightsRequestMessageInterface): void {
+        if (!this.model) return;
+        MyTensorFlowLib.importWeights(this.model, message.weights);
+    }
+
     private fit(message: FitRequestMessageInterface): void {
-        if (!this.model) {
-            return;
-        }
+        if (!this.model) return;
 
         let inputs = tf.tensor2d(message.inputs);
         let labels = tf.tensor2d(message.labels);
@@ -66,7 +73,6 @@ export default class AiModelWorkerController {
 
     private onEpochEnd(epochIndex: number, stats: any): void {
         this.lastStats = stats;
-        console.log(stats);
     }
 
     private fitComplete(): void {
