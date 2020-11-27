@@ -13,6 +13,10 @@ export default class RandomKickModel extends AbstractKickModel {
         return 'Random';
     }
 
+    public getDescription(): string {
+        return 'Kick the ball randomly sideways.';
+    }
+
     public isBallWithinKick(ball: Ball): boolean {
         let result = super.isBallWithinKick(ball);
 

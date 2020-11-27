@@ -11,6 +11,10 @@ export default class FrontKickModel extends AbstractKickModel {
         return 'Front';
     }
 
+    public getDescription(): string {
+        return 'Kick the ball without sideways motion.';
+    }
+
     public getPosition(ball: Ball): Vector {
         let player = this.getPlayer();
 

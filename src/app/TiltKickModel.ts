@@ -11,6 +11,10 @@ export default class TiltKickModel extends AbstractKickModel {
         return 'Tilt';
     }
 
+    public getDescription(): string {
+        return 'Kick the ball sideways for stronger tilt.';
+    }
+
     public getPosition(ball: Ball): Vector {
         let player = this.getPlayer();
 

@@ -20,6 +20,10 @@ export default class AbstractKickModel {
         throw 'Override this';
     }
 
+    public getDescription(): string {
+        throw 'Override this';
+    }
+
     public getId(): bigint {
         return this.id;
     }

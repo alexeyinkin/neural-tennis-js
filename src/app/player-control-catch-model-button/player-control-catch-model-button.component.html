@@ -1,0 +1,7 @@
+<button
+    class="my-toggle"
+    [class.my-toggle-active]="model.getCatchModel().getId() === catchModel.getId()"
+    (click)="click()"
+>
+    {{catchModel.getTitle()}}
+</button>

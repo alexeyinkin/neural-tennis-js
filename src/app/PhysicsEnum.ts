@@ -4,7 +4,7 @@ export default class PhysicsEnum {
 
     public static BALL_RADIUS       = 10;
     public static BALL_MASS         = 1;
-    public static BALL_FRICTION     = .1;
+    public static BALL_FRICTION     = .03;
     public static BALL_MAX_SPEED    = 25;
 
     public static PLAYER_WIDTH      = 70;

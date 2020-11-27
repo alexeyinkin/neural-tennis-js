@@ -1,0 +1,7 @@
+<button
+    class="my-toggle"
+    [class.my-toggle-active]="player.getControlModel().getId() === model.getId()"
+    (click)="click()"
+>
+    {{model.getTitle()}}
+</button>

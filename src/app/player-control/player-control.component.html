@@ -1,0 +1,13 @@
+<app-player-control-model-buttons [player]="player" class="my-button-group"></app-player-control-model-buttons>
+
+<app-player-control-ai
+    *ngIf="player.getControlModel().getName() === 'ai'"
+    [player]="player"
+    [model]="$any(player.getControlModel())"
+></app-player-control-ai>
+
+<app-player-control-manual
+    *ngIf="player.getControlModel().getName() === 'manual'"
+    [player]="player"
+    [model]="$any(player.getControlModel())"
+></app-player-control-manual>

@@ -1,0 +1,10 @@
+$models: 'random', 'front', 'tilt';
+
+@each $model in $models {
+    .#{$model} {
+        background-image: url('../../assets/#{$model}.svg');
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+}

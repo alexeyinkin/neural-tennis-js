@@ -1,0 +1,9 @@
+<button
+    class="my-toggle"
+    [class]="kickModel.getName()"
+    [class.my-toggle-active]="model.getKickModel().getId() === kickModel.getId()"
+    [title]="kickModel.getDescription()"
+    (click)="click()"
+>
+    &nbsp;
+</button>
