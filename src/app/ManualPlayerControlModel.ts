@@ -12,6 +12,14 @@ export default class ManualPlayerControlModel extends AbstractPlayerControlModel
         super();
     }
 
+    public getName(): string {
+        return 'manual';
+    }
+
+    public getTitle(): string {
+        return 'Manual';
+    }
+
     public handleKeyDown(code: string) {
         this.handleKeyUpOrDown(code, true);
     }
@@ -56,5 +64,9 @@ export default class ManualPlayerControlModel extends AbstractPlayerControlModel
         }
 
         return new Vector(ddx, ddy);
+    }
+
+    public getKeyHint(): string {
+        return this.keyMapping.hint;
     }
 }

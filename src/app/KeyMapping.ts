@@ -3,4 +3,5 @@ export default interface KeyMapping {
     right:  string;
     up:     string;
     down:   string;
+    hint:   string;
 }

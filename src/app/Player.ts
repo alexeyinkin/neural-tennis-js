@@ -3,9 +3,11 @@ import Ball from './Ball';
 import Color from './Color';
 import PhysicalObject from './PhysicalObject';
 import Vector from './Vector';
+import AiPlayerControlModel from "./AiPlayerControlModel";
 
 export default class Player extends PhysicalObject {
     private readonly id: bigint;
+    private name: string;
 
     private acceleration: Vector = new Vector(0, 0);
     private score = 0;
@@ -13,7 +15,7 @@ export default class Player extends PhysicalObject {
     private controlModels: AbstractPlayerControlModel[] = [];
     private controlModelIndex = 0;
 
-    static nextId: bigint = 0n;
+    private static nextId: bigint = 1n;
 
     public constructor(
         private color: Color,
@@ -27,6 +29,7 @@ export default class Player extends PhysicalObject {
         super(width, height, mass, friction, maxSpeed);
 
         this.id = Player.nextId++;
+        this.name = 'Player ' + this.id;
     }
 
     public isKicking(ball: Ball): boolean {
@@ -101,10 +104,22 @@ export default class Player extends PhysicalObject {
         }
     }
 
-    public getControlModel(): AbstractPlayerControlModel|undefined {
-        return this.controlModels.length > 0
-            ? this.controlModels[this.controlModelIndex]
-            : undefined;
+    public getControlModel(): AbstractPlayerControlModel {
+        return this.controlModels[this.controlModelIndex];
+    }
+
+    public getControlModels(): AbstractPlayerControlModel[] {
+        return this.controlModels;
+    }
+
+    public getAiControlModel(): AiPlayerControlModel {
+        for (const model of this.controlModels) {
+            if (model.getName() === 'ai') {
+                return model as AiPlayerControlModel;
+            }
+        }
+
+        throw 'Model not found';
     }
 
     public setAcceleration(acceleration: Vector): void {
@@ -137,7 +152,24 @@ export default class Player extends PhysicalObject {
         this.controlModelIndex = nextIndex;
     }
 
+    public setControlModelId(id: bigint): void {
+        for (let i = this.controlModels.length; --i >= 0; ) {
+            if (this.controlModels[i].getId() === id) {
+                this.controlModelIndex = i;
+                return;
+            }
+        }
+    }
+
     public getId(): bigint {
         return this.id;
+    }
+
+    public setName(name: string): void {
+        this.name = name;
+    }
+
+    public getName(): string {
+        return this.name;
     }
 }

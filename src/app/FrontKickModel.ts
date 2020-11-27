@@ -3,6 +3,14 @@ import Ball from './Ball';
 import Vector from './Vector';
 
 export default class FrontKickModel extends AbstractKickModel {
+    public getName(): string {
+        return 'front';
+    }
+
+    public getTitle(): string {
+        return 'Front';
+    }
+
     public getPosition(ball: Ball): Vector {
         let player = this.getPlayer();
 

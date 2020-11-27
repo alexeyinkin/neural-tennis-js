@@ -1,3 +1,38 @@
+$activeButtonColor: rgba(0, 0, 0, .2);
+$buttonBorder: 1px solid $activeButtonColor;
+$fontFamily: sans-serif;
+
 body {
     background-color: #a1a1a1;
+}
+
+.my-button-group {
+    display: inline-block;
+    margin-right: .5em;
+}
+
+button.my-toggle {
+    background-color: rgba(0, 0, 0, .05);
+    border: $buttonBorder;
+    border-left: none;
+    cursor: pointer;
+}
+
+*:first-child > button.my-toggle {
+    border-left: $buttonBorder;
+}
+
+button.my-toggle-active {
+    background-color: $activeButtonColor;
+    cursor: unset;
+}
+
+.my-text {
+    font-family: $fontFamily;
+}
+
+.my-small-text {
+    font-family: $fontFamily;
+    font-size: .7em;
+    opacity: .5;
 }

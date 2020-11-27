@@ -69,6 +69,14 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
         this.plotLoss();
     }
 
+    public getName(): string {
+        return 'neural';
+    }
+
+    public getTitle(): string {
+        return 'Neural';
+    }
+
     public getPosition(ball: Ball): Vector|undefined {
         let id = ball.getId();
         let ballCurrentData = this.getBallData(ball);
@@ -177,7 +185,7 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
     }
 
     private plotLoss(): void {
-        const container = {tab: 'Player ' + this.getPlayer().getId(), name: 'MSE'};
+        const container = {tab: this.getPlayer().getName(), name: 'MSE'};
         let values = [];
         let series = [];
 

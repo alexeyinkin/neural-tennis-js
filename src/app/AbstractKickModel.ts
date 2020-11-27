@@ -4,7 +4,24 @@ import Player from './Player';
 import Vector from './Vector';
 
 export default class AbstractKickModel {
+    private readonly id: bigint;
+
+    private static nextId = 0n;
+
     public constructor (private engine: Engine, private player: Player) {
+        this.id = AbstractKickModel.nextId++;
+    }
+
+    public getName(): string {
+        throw 'Override this';
+    }
+
+    public getTitle(): string {
+        throw 'Override this';
+    }
+
+    public getId(): bigint {
+        return this.id;
     }
 
     public isBallWithinKick(ball: Ball): boolean {

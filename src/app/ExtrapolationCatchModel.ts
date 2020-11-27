@@ -3,6 +3,14 @@ import Ball from './Ball';
 import Vector from './Vector';
 
 export default class ExtrapolationCatchModel extends AbstractCatchModel {
+    public getName(): string {
+        return 'extrapolation';
+    }
+
+    public getTitle(): string {
+        return 'Extrapolation';
+    }
+
     public getPosition(ball: Ball): Vector|undefined {
         let catchLineY = this.getCatchLineY();
         let x = ball.getXWhenAtY(catchLineY);

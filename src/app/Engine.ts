@@ -12,9 +12,9 @@ import ObjectMoveListener from './ObjectMoveListener';
 import PhysicalObject from './PhysicalObject';
 import PhysicsEnum from './PhysicsEnum';
 import Player from './Player';
+import TiltKickModel from './TiltKickModel';
 import Vector from './Vector';
 import RandomKickModel from './RandomKickModel';
-import XAccelerationKickModel from './XAccelerationKickModel';
 
 export default class Engine {
     private bluePlayer!: Player;
@@ -97,6 +97,7 @@ export default class Engine {
 
     private createRedPlayer(): void {
         let player = this.createPlayer(new Color(255, 0, 0));
+        player.setName('Red');
 
         player.setX((PhysicsEnum.FIELD_WIDTH - PhysicsEnum.PLAYER_WIDTH) / 2);
         player.setY(PhysicsEnum.PLAYER_OFFSET);
@@ -111,13 +112,13 @@ export default class Engine {
             right:  KeyCodeEnum.RED_PLAYER_RIGHT,
             up:     KeyCodeEnum.RED_PLAYER_UP,
             down:   KeyCodeEnum.RED_PLAYER_DOWN,
+            hint:   KeyCodeEnum.RED_HINT,
         });
 
         player.addControlModel(manualModel);
         this.manualPlayerControlModels.push(manualModel);
 
-        this.addExtrapolationAiModel(player);
-        this.addNeuralAiModel(player);
+        this.addAiModel(player);
 
         this.redPlayer = player;
         this.addPlayer(player);
@@ -125,6 +126,7 @@ export default class Engine {
 
     private createBluePlayer(): void {
         let player = this.createPlayer(new Color(0, 0, 255));
+        player.setName('Blue');
 
         player.setX((PhysicsEnum.FIELD_WIDTH - PhysicsEnum.PLAYER_WIDTH) / 2);
         player.setY(PhysicsEnum.FIELD_HEIGHT - PhysicsEnum.PLAYER_OFFSET - PhysicsEnum.PLAYER_HEIGHT);
@@ -139,32 +141,27 @@ export default class Engine {
             right:  KeyCodeEnum.BLUE_PLAYER_RIGHT,
             up:     KeyCodeEnum.BLUE_PLAYER_UP,
             down:   KeyCodeEnum.BLUE_PLAYER_DOWN,
+            hint:   KeyCodeEnum.BLUE_HINT,
         });
 
         player.addControlModel(manualModel);
         this.manualPlayerControlModels.push(manualModel);
 
-        this.addExtrapolationAiModel(player);
-        this.addNeuralAiModel(player);
+        this.addAiModel(player);
 
         this.bluePlayer = player;
         this.addPlayer(player);
     }
 
-    private addExtrapolationAiModel(player: Player): void {
+    private addAiModel(player: Player): void {
         let model = new AiPlayerControlModel(this, player);
 
-        model.setCatchModel(new ExtrapolationCatchModel(this, player));
-        model.setKickModel(new RandomKickModel(this, player));
+        model.addCatchModel(new ExtrapolationCatchModel(this, player));
+        model.addCatchModel(new NeuralCatchModel(this, player));
 
-        player.addControlModel(model);
-    }
-
-    private addNeuralAiModel(player: Player): void {
-        let model = new AiPlayerControlModel(this, player);
-
-        model.setCatchModel(new NeuralCatchModel(this, player));
-        model.setKickModel(new RandomKickModel(this, player));
+        model.addKickModel(new RandomKickModel(this, player));
+        model.addKickModel(new FrontKickModel(this, player));
+        model.addKickModel(new TiltKickModel(this, player));
 
         player.addControlModel(model);
     }
@@ -354,5 +351,13 @@ export default class Engine {
 
     public denormalizeHeight(height: number): number {
         return height * this.getFieldHeight();
+    }
+
+    public getRedPlayer(): Player {
+        return this.redPlayer;
+    }
+
+    public getBluePlayer(): Player {
+        return this.bluePlayer;
     }
 }

@@ -5,6 +5,14 @@ import Vector from './Vector';
 export default class RandomKickModel extends AbstractKickModel {
     private position?: Vector;
 
+    public getName(): string {
+        return 'random';
+    }
+
+    public getTitle(): string {
+        return 'Random';
+    }
+
     public isBallWithinKick(ball: Ball): boolean {
         let result = super.isBallWithinKick(ball);
 

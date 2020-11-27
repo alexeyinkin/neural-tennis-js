@@ -2,7 +2,15 @@ import AbstractKickModel from './AbstractKickModel';
 import Ball from './Ball';
 import Vector from './Vector';
 
-export default class XAccelerationKickModel extends AbstractKickModel {
+export default class TiltKickModel extends AbstractKickModel {
+    public getName(): string {
+        return 'tilt';
+    }
+
+    public getTitle(): string {
+        return 'Tilt';
+    }
+
     public getPosition(ball: Ball): Vector {
         let player = this.getPlayer();
 

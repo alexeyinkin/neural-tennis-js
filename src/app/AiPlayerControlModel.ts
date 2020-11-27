@@ -9,11 +9,23 @@ import Vector from './Vector';
 
 export default class AiPlayerControlModel extends AbstractPlayerControlModel {
     private accelerationCalculator = new AccelerationCalculator();
-    private catchModel?: AbstractCatchModel;
-    private kickModel?: AbstractKickModel;
+
+    private catchModels: AbstractCatchModel[] = [];
+    private catchModelIndex = 0;
+
+    private kickModels: AbstractKickModel[] = [];
+    private kickModelIndex = 0;
 
     public constructor(private engine: Engine, private player: Player) {
         super();
+    }
+
+    public getName(): string {
+        return 'ai';
+    }
+
+    public getTitle(): string {
+        return 'AI';
     }
 
     public getAcceleration(): Vector {
@@ -33,18 +45,15 @@ export default class AiPlayerControlModel extends AbstractPlayerControlModel {
             return undefined;
         }
 
-        if (this.kickModel && this.kickModel.isBallWithinKick(bestBall)) {
-            if (this.catchModel) {
-                this.catchModel.onBallWithinKick(bestBall);
-            }
-            return this.kickModel.getPosition(bestBall);
+        let catchModel = this.getCatchModel();
+        let kickModel = this.getKickModel();
+
+        if (kickModel.isBallWithinKick(bestBall)) {
+            catchModel.onBallWithinKick(bestBall);
+            return kickModel.getPosition(bestBall);
         }
 
-        if (this.catchModel) {
-            return this.catchModel.getPosition(bestBall);
-        }
-
-        return undefined;
+        return catchModel.getPosition(bestBall);
     }
 
     // TODO: Add BestBallSelectionModel.
@@ -74,14 +83,48 @@ export default class AiPlayerControlModel extends AbstractPlayerControlModel {
     }
 
     private getCatchLineY(): number {
-        return this.catchModel ? this.catchModel.getCatchLineY() : this.player.getY();
+        return this.getCatchModel().getCatchLineY();
     }
 
-    public setCatchModel(model: AbstractCatchModel): void {
-        this.catchModel = model;
+    public addCatchModel(model: AbstractCatchModel): void {
+        this.catchModels.push(model);
     }
 
-    public setKickModel(model: AbstractKickModel): void {
-        this.kickModel = model;
+    public setCatchModelId(id: bigint): void {
+        for (let i = this.catchModels.length; --i >= 0; ) {
+            if (this.catchModels[i].getId() === id) {
+                this.catchModelIndex = i;
+                return;
+            }
+        }
+    }
+
+    public setKickModelId(id: bigint): void {
+        for (let i = this.kickModels.length; --i >= 0; ) {
+            if (this.kickModels[i].getId() === id) {
+                this.kickModelIndex = i;
+                return;
+            }
+        }
+    }
+
+    public getCatchModel(): AbstractCatchModel {
+        return this.catchModels[this.catchModelIndex];
+    }
+
+    public getCatchModels(): AbstractCatchModel[] {
+        return this.catchModels;
+    }
+
+    public addKickModel(model: AbstractKickModel): void {
+        this.kickModels.push(model);
+    }
+
+    public getKickModel(): AbstractKickModel {
+        return this.kickModels[this.kickModelIndex];
+    }
+
+    public getKickModels(): AbstractKickModel[] {
+        return this.kickModels;
     }
 }
