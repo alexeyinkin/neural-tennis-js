@@ -25,7 +25,7 @@ export default class AiPlayerControlModel extends AbstractPlayerControlModel {
     }
 
     public getTitle(): string {
-        return 'AI';
+        return '\uD83D\uDDA5\uFE0F'; // Computer emoji.
     }
 
     public getAcceleration(): Vector {

@@ -1,5 +1,6 @@
 import {Component, HostBinding, Input} from '@angular/core';
 import Player from "../Player";
+import PhysicsEnum from "../PhysicsEnum";
 
 @Component({
     selector: 'app-player-field',
@@ -18,26 +19,24 @@ export default class PlayerFieldComponent {
         return this.player.getColor().getRgba(this.backgroundAlpha);
     }
 
-    @HostBinding('style.left.px')
+    @HostBinding('style.left.%')
     private get left(): number {
         return this.player.getMinX();
     }
 
-    @HostBinding('style.top.px')
+    @HostBinding('style.top.%')
     private get top(): number {
-        return this.player.getMinY();
+        return this.player.getMinY() / PhysicsEnum.HEIGHT_RATIO;
     }
 
-    @HostBinding('style.width')
-    private get width(): string {
-        let maxRightX = this.player.getMaxRightX();
-        return typeof maxRightX === 'undefined' ? '100%' : (maxRightX - this.left) + 'px';
+    @HostBinding('style.width.%')
+    private get width(): number {
+        return this.player.getMaxRightX();
     }
 
-    @HostBinding('style.height')
-    private get height(): string {
-        let maxBottomY = this.player.getMaxBottomY();
-        return typeof maxBottomY === 'undefined' ? '100%' : (maxBottomY - this.top) + 'px';
+    @HostBinding('style.height.%')
+    private get height(): number {
+        return (this.player.getMaxBottomY() - this.player.getMinY()) / PhysicsEnum.HEIGHT_RATIO;
     }
 
     @HostBinding('style.borderTop')

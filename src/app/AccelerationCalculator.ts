@@ -1,10 +1,11 @@
+import PhysicsEnum from './PhysicsEnum';
 import Vector from './Vector';
 
 export default class AccelerationCalculator {
     public calculateByPositions(fromPosition: Vector, toPosition: Vector, speed: Vector) {
         let delta = toPosition.subtract(fromPosition);
 
-        if (delta.getLength() < 15) {
+        if (delta.getLength() < PhysicsEnum.FIELD_WIDTH / 25) {
             return speed.invert();
         }
 

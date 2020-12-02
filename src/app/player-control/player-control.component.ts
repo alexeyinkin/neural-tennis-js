@@ -4,6 +4,7 @@ import Player from '../Player';
 @Component({
     selector: 'app-player-control',
     templateUrl: './player-control.component.html',
+    styleUrls: ['./player-control.component.scss'],
 })
 export class PlayerControlComponent {
     @Input() player!: Player;

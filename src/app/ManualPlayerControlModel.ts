@@ -21,7 +21,7 @@ export default class ManualPlayerControlModel extends AbstractPlayerControlModel
     }
 
     public getTitle(): string {
-        return 'Manual';
+        return '\uD83D\uDC64'; // Bust in Silhouette emoji.
     }
 
     public handleKeyDown(code: string) {

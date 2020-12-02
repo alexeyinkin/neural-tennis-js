@@ -4,7 +4,7 @@ import Player from './Player';
 import Vector from './Vector';
 
 export default class AbstractCatchModel {
-    static DEFAULT_CATCH_LINE_OFFSET = 20; // From the player's losing line.
+    static DEFAULT_CATCH_LINE_OFFSET = 5; // From the player's losing line.
 
     private readonly id: bigint;
 

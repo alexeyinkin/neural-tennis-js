@@ -8,7 +8,7 @@ export default class ExtrapolationCatchModel extends AbstractCatchModel {
     }
 
     public getTitle(): string {
-        return 'Extrapolation';
+        return 'Linear';
     }
 
     public getPosition(ball: Ball): Vector|undefined {

@@ -1,5 +1,6 @@
 import {Component, HostBinding, Input} from '@angular/core';
 import Ball from '../Ball';
+import PhysicsEnum from "../PhysicsEnum";
 
 @Component({
     selector: 'app-ball',
@@ -9,24 +10,24 @@ import Ball from '../Ball';
 export default class BallComponent {
     @Input() ball!: Ball;
 
-    @HostBinding('style.width.px')
+    @HostBinding('style.width.%')
     private get width(): number {
         return this.ball.getWidth();
     }
 
-    @HostBinding('style.height.px')
+    @HostBinding('style.height.%')
     private get height(): number {
-        return this.ball.getHeight();
+        return this.ball.getHeight() / PhysicsEnum.HEIGHT_RATIO;
     }
 
-    @HostBinding('style.left.px')
+    @HostBinding('style.left.%')
     private get x(): number {
         return this.ball.getX();
     }
 
-    @HostBinding('style.top.px')
+    @HostBinding('style.top.%')
     private get y(): number {
-        return this.ball.getY();
+        return this.ball.getY() / PhysicsEnum.HEIGHT_RATIO;
     }
 
     public constructor() { }

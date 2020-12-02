@@ -48,9 +48,9 @@ export default class FieldComponent {
     }
 
     private getFieldPosition(touch: Touch): Vector {
-        let parentRect = this.element.nativeElement.getBoundingClientRect();
-        let x = touch.clientX - parentRect.left;
-        let y = touch.clientY - parentRect.top;
+        let rect = this.element.nativeElement.getBoundingClientRect();
+        let x = (touch.clientX - rect.left) / rect.width * 100;
+        let y = (touch.clientY - rect.top) / rect.width * 100;
 
         return new Vector(x, y);
     }

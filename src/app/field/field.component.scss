@@ -1,8 +1,5 @@
 #field {
-    width: 400px;
-    height: 600px;
     background-color: white;
-    //  Need to align field to the left to not be covered by TensorFlow Vis panel.
-    //margin: 20px auto;
+    margin: 0 auto;
     position: relative;
 }

@@ -36,3 +36,26 @@ button.my-toggle-active {
     font-size: .7em;
     opacity: .5;
 }
+
+.width-as-field {
+    width: calc((100vh - 4em) / 3 * 2);
+}
+
+.height-as-field {
+    height: calc(100vh - 4em);
+}
+
+button.emoji {
+    color: transparent;
+    text-shadow: 0 0 0 rgba(0, 0, 0, .6);
+}
+
+.computer-only {
+    display: none;
+}
+
+@media (hover) {
+    .computer-only {
+        display: unset;
+    }
+}

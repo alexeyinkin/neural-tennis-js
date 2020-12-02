@@ -62,8 +62,8 @@ export default class Engine {
             )
         );
 
-        let dx = Math.random() * 10 - 5;
-        let dy = (Math.random() + 2) * 5 * Math.sign(Math.random() - .5);
+        let dx = (Math.random() - .5) * PhysicsEnum.BALL_MAX_SPEED / 3;
+        let dy = (Math.random() + PhysicsEnum.BALL_MAX_SPEED / 15) * PhysicsEnum.BALL_MAX_SPEED / 1.5 * Math.sign(Math.random() - .5);
 
         ball.setSpeed(new Vector(dx, dy));
 
@@ -133,7 +133,8 @@ export default class Engine {
         player.addControlModel(manualModel);
         this.manualPlayerControlModels.push(manualModel);
 
-        this.addAiModel(player);
+        let aiModel = this.addAiModel(player);
+        player.setControlModelId(aiModel.getId());
 
         this.redPlayer = player;
         this.addPlayer(player);
@@ -170,7 +171,7 @@ export default class Engine {
         this.addPlayer(player);
     }
 
-    private addAiModel(player: Player): void {
+    private addAiModel(player: Player): AiPlayerControlModel {
         let model = new AiPlayerControlModel(this, player);
 
         model.addCatchModel(new ExtrapolationCatchModel(this, player));
@@ -181,6 +182,7 @@ export default class Engine {
         model.addKickModel(new TiltKickModel(this, player));
 
         player.addControlModel(model);
+        return model;
     }
 
     private createPlayer(color: Color): Player {

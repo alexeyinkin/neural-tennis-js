@@ -9,5 +9,5 @@ export default class KeyCodeEnum {
     static RED_PLAYER_RIGHT     = 'KeyD';
     static RED_PLAYER_UP        = 'KeyW';
     static RED_PLAYER_DOWN      = 'KeyS';
-    static RED_HINT             = 'A = left, D = right, W = up, S = down.';
+    static RED_HINT             = 'Use the ADWS keys.';
 }
