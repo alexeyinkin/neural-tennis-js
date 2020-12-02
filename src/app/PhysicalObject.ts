@@ -5,10 +5,10 @@ export default class PhysicalObject {
     private prevPosition    = new Vector(0, 0);
     private halfSize: Vector;
 
-    private minX?: number;
-    private minY?: number;
-    private maxRightX?: number;
-    private maxBottomY?: number;
+    private minX: number = Number.MIN_SAFE_INTEGER;
+    private minY: number = Number.MIN_SAFE_INTEGER;
+    private maxRightX: number = Number.MAX_SAFE_INTEGER;
+    private maxBottomY: number = Number.MAX_SAFE_INTEGER;
 
     private speed = new Vector(0, 0);
 
@@ -26,7 +26,7 @@ export default class PhysicalObject {
         this.minX = minX;
     }
 
-    public getMinX(): number|undefined {
+    public getMinX(): number {
         return this.minX;
     }
 
@@ -34,7 +34,7 @@ export default class PhysicalObject {
         this.minY = minY;
     }
 
-    public getMinY(): number|undefined {
+    public getMinY(): number {
         return this.minY;
     }
 
@@ -42,14 +42,11 @@ export default class PhysicalObject {
         this.maxRightX = maxRightX;
     }
 
-    public getMaxX(): number|undefined {
-        if (typeof this.maxRightX === 'undefined') {
-            return undefined;
-        }
+    public getMaxX(): number {
         return this.maxRightX - this.width;
     }
 
-    public getMaxRightX(): number|undefined {
+    public getMaxRightX(): number {
         return this.maxRightX;
     }
 
@@ -57,7 +54,7 @@ export default class PhysicalObject {
         this.maxBottomY = maxBottomY;
     }
 
-    public getMaxBottomY(): number|undefined {
+    public getMaxBottomY(): number {
         return this.maxBottomY;
     }
 

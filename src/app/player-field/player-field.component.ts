@@ -1,10 +1,10 @@
-import {Component, HostBinding, HostListener, Input} from '@angular/core';
+import {Component, HostBinding, Input} from '@angular/core';
 import Player from "../Player";
 
 @Component({
     selector: 'app-player-field',
     templateUrl: './player-field.component.html',
-    styleUrls: ['./player-field.component.scss']
+    styleUrls: ['./player-field.component.scss'],
 })
 export default class PlayerFieldComponent {
     backgroundAlpha = .02;
@@ -20,12 +20,12 @@ export default class PlayerFieldComponent {
 
     @HostBinding('style.left.px')
     private get left(): number {
-        return this.player.getMinX() || 0;
+        return this.player.getMinX();
     }
 
     @HostBinding('style.top.px')
     private get top(): number {
-        return this.player.getMinY() || 0;
+        return this.player.getMinY();
     }
 
     @HostBinding('style.width')
@@ -62,11 +62,4 @@ export default class PlayerFieldComponent {
     private get color(): string {
         return this.player.getColor().getRgba(this.textAlpha);
     }
-
-    @HostListener('click')
-    private onFieldClick(): void {
-        this.player.switchToNextControlModel();
-    }
-
-    public constructor() { }
 }

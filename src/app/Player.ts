@@ -1,9 +1,10 @@
 import AbstractPlayerControlModel from './AbstractPlayerControlModel';
+import AiPlayerControlModel from './AiPlayerControlModel';
 import Ball from './Ball';
 import Color from './Color';
+import ManualPlayerControlModel from './ManualPlayerControlModel';
 import PhysicalObject from './PhysicalObject';
 import Vector from './Vector';
-import AiPlayerControlModel from "./AiPlayerControlModel";
 
 export default class Player extends PhysicalObject {
     private readonly id: bigint;
@@ -116,6 +117,16 @@ export default class Player extends PhysicalObject {
         for (const model of this.controlModels) {
             if (model.getName() === 'ai') {
                 return model as AiPlayerControlModel;
+            }
+        }
+
+        throw 'Model not found';
+    }
+
+    public getManualControlModel(): ManualPlayerControlModel {
+        for (const model of this.controlModels) {
+            if (model.getName() === 'manual') {
+                return model as ManualPlayerControlModel;
             }
         }
 

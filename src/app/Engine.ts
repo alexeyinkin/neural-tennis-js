@@ -5,6 +5,7 @@ import BallLostListener from './BallLostListener';
 import Color from './Color';
 import ExtrapolationCatchModel from './ExtrapolationCatchModel';
 import FrontKickModel from './FrontKickModel';
+import GoWhereTappedControlModel from './touch/GoWhereTappedControlModel';
 import KeyCodeEnum from './KeyCodeEnum';
 import ManualPlayerControlModel from './ManualPlayerControlModel';
 import NeuralCatchModel from './NeuralCatchModel';
@@ -15,6 +16,7 @@ import Player from './Player';
 import TiltKickModel from './TiltKickModel';
 import Vector from './Vector';
 import RandomKickModel from './RandomKickModel';
+import TouchDispatcher from './touch/TouchDispatcher';
 
 export default class Engine {
     private bluePlayer!: Player;
@@ -24,6 +26,7 @@ export default class Engine {
     private players: Player[] = [];
     private objects: PhysicalObject[] = [];
     private manualPlayerControlModels: ManualPlayerControlModel[] = [];
+    private readonly touchDispatcher;
 
     private ballLostListeners: BallLostListener[] = [];
     private ballKickedListeners: BallKickedListener[] = [];
@@ -34,6 +37,8 @@ export default class Engine {
     public constructor() {
         this.createBalls();
         this.createPlayers();
+
+        this.touchDispatcher = new TouchDispatcher(this);
     }
 
     private createBalls(): void {
@@ -122,6 +127,8 @@ export default class Engine {
             down:   KeyCodeEnum.RED_PLAYER_DOWN,
             hint:   KeyCodeEnum.RED_HINT,
         });
+        let touchModel = new GoWhereTappedControlModel(player, new Vector(0, PhysicsEnum.PLAYER_HANDLE_OFFSET));
+        manualModel.addTouchModel(touchModel);
 
         player.addControlModel(manualModel);
         this.manualPlayerControlModels.push(manualModel);
@@ -151,6 +158,8 @@ export default class Engine {
             down:   KeyCodeEnum.BLUE_PLAYER_DOWN,
             hint:   KeyCodeEnum.BLUE_HINT,
         });
+        let touchModel = new GoWhereTappedControlModel(player, new Vector(0, -PhysicsEnum.PLAYER_HANDLE_OFFSET));
+        manualModel.addTouchModel(touchModel);
 
         player.addControlModel(manualModel);
         this.manualPlayerControlModels.push(manualModel);
@@ -325,6 +334,14 @@ export default class Engine {
         return this.players;
     }
 
+    public requirePlayerById(id: bigint): Player {
+        for (const player of this.players) {
+            if (player.getId() === id) return player;
+        }
+
+        throw 'Player not found';
+    }
+
     public getFieldWidth(): number {
         return PhysicsEnum.FIELD_WIDTH;
     }
@@ -367,5 +384,9 @@ export default class Engine {
 
     public getBluePlayer(): Player {
         return this.bluePlayer;
+    }
+
+    public getTouchDispatcher(): TouchDispatcher {
+        return this.touchDispatcher;
     }
 }

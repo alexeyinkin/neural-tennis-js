@@ -15,6 +15,7 @@ export default class PhysicsEnum {
     public static PLAYER_MAX_ACCELERATION = 3;
 
     public static PLAYER_OFFSET     = 20;
+    public static PLAYER_HANDLE_OFFSET = 30;
     public static BALL_COUNT        = 1;
 
     public static TICK_INTERVAL_MS  = 40;
