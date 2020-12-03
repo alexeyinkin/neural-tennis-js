@@ -35,7 +35,7 @@ A.I. has two models to trace the ball, and you can switch the two:
 - Linear model uses extrapolation to see where the ball will end up, and moves there. It is perfect in that.
 - Neural model initially gives random predictions but learns gradually. It starts to get it right after observing 50-100 balls and usually plays good after 200 balls.
 
-The chart show the neural network progress. One line shows how bad was the last position predicted. The other one shows log10 of the mean standard error among learned balls. As the log10(MSE) approaches -2 and goes below, it is pretty good.
+The chart show the neural network progress. One line shows how bad the last position was predicted. The other one shows log10 of the mean standard error among learned balls. As the log10(MSE) approaches -2 and goes below, it is pretty good.
 
 To have fun, train the network against the Linear extrapolation model, then take over and see how the network picks your style as well.
 
@@ -50,7 +50,7 @@ Any kick model can run with any tracing model.
 
 ### Saving and loading the neural network
 
-To save your time you may load pre-trained network from the `pre-trained` directory. You may also save the network. Use the buttons above and below the field.
+To save your time you may load pre-trained network from the `pre-trained` directory. You may also save the network. Use the buttons above and below the field. They are visible when the network is in control.
 
 The format is JSON with all the observed balls and current network weights.
 
@@ -58,17 +58,17 @@ The network layout is hardcoded. If you change it, you will not be able to load 
 
 ## Architecture
 
-The core object is Engine. It creates the players, the balls, it ticks time.
+The core object is `Engine`. It creates the players, the balls, and the models, and it ticks time.
 
-On each `tick()` the engine moves objects, checks collisions and checks goals.
+On each `tick()` the engine moves objects, checks for collisions, and checks for goals.
 
-Each player has both manual and A.I. control models associated with them. The toggles above and below the field switch these models.
+Each player has both manual and A.I. control models associated with them with one being active at the time.
 
 Each A.I. control model in turn has 2 'catch' models and 3 'kick' models, they are switched with the buttons.
 
-Each player's neural network is trained in a separate worker so that it does not slow down the UI. With each new observed ball `NeuralCatchModel` sends all historical data to the worker.
+Each player's neural network is trained in a separate worker so that it does not slow down the UI. With each new observed ball `NeuralCatchModel` sends all historical data to the worker to re-iterate the training.
 
-As we need predictions fast, we cannot wait for the network in the worker as it might be training. For that purpose `NeuralCatchModel` has a local copy of the same network which it uses for predictions. Each time the network in the worker finishes training, the worker sends new weights back to `NeuralCatchModel`.
+As we need predictions fast, we cannot wait for the network in the worker as it might be training. For that purpose `NeuralCatchModel` has a local copy of the same network which it uses for predictions. Each time the network in the worker finishes training, the worker sends new weights back to `NeuralCatchModel`, and the local model gets updated.
 
 ## Known issues
 
@@ -77,7 +77,7 @@ As we need predictions fast, we cannot wait for the network in the worker as it 
 
 ## Things to try if I or you have time
 
-- `NeuralKickModel` would be fun. It should use a neural network to determine kick direction. Gradually it would learn to tick to the farthest corner from the opponent.
+- `NeuralKickModel` would be fun. It should use another neural network to determine kick direction. Gradually it would learn to tick to the farthest corner from the opponent.
 - Allow to change the network layout at runtime. Allow to load networks from dumps with different layouts.
 - Convert to a native app.
 
