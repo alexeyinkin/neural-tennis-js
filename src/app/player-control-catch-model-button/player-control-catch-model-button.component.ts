@@ -7,7 +7,7 @@ import Player from '../Player';
     selector: 'app-player-control-catch-model-button',
     templateUrl: './player-control-catch-model-button.component.html',
 })
-export class PlayerControlCatchModelButtonComponent {
+export default class PlayerControlCatchModelButtonComponent {
     @Input() player!: Player;
     @Input() model!: AiPlayerControlModel;
     @Input() catchModel!: AbstractCatchModel;

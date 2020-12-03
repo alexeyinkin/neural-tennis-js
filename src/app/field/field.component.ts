@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, Input} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import Engine from '../Engine';
 import Vector from '../Vector';
 
@@ -9,12 +9,19 @@ import Vector from '../Vector';
 })
 export default class FieldComponent {
     @Input() engine!: Engine;
+    @Output() centerAreaClick = new EventEmitter();
 
     public constructor(private element: ElementRef) {}
 
     @HostListener('touchstart', ['$event'])
     private handleTouchStart(event: TouchEvent): void {
-        this.engine.getTouchDispatcher().handleTouchStart(event.touches, this.getFieldPositions(event.touches));
+        let dispatcher = this.engine.getTouchDispatcher();
+        dispatcher.handleTouchStart(event.changedTouches, this.getFieldPositions(event.changedTouches));
+
+        if (dispatcher.isAtLeastOneTouchMissingPlayerArea(event.changedTouches)) {
+            this.centerAreaClick.emit(null);
+        }
+
         event.preventDefault();
     }
 
@@ -35,6 +42,11 @@ export default class FieldComponent {
     private handleTouchCancel(event: TouchEvent): void {
         this.engine.getTouchDispatcher().handleTouchCancel(event.touches, this.getFieldPositions(event.touches));
         event.preventDefault();
+    }
+
+    @HostListener('click') // If not prevented by touch handling, i.e. on desktop.
+    private handleClick(): void {
+        this.centerAreaClick.emit(null);
     }
 
     private getFieldPositions(touches: TouchList): Vector[] {

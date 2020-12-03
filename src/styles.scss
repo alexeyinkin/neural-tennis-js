@@ -1,9 +1,32 @@
 $activeButtonColor: rgba(0, 0, 0, .2);
 $buttonBorder: 1px solid $activeButtonColor;
 $fontFamily: sans-serif;
+$noChromeFieldHeight: calc(100vh - 3.5em);
+
+// Use smaller height on-fullscreen mobile browsers,
+// see https://chanind.github.io/javascript/2019/09/28/avoid-100vh-on-mobile-web.html
+$chromeFieldHeight: calc(100vh - 9em);
 
 body {
     background-color: #a1a1a1;
+}
+
+.width-as-field {
+    width: calc(#{$noChromeFieldHeight} / 3 * 2);
+}
+
+.height-as-field {
+    height: $noChromeFieldHeight;
+}
+
+@media not all and (hover: hover) {
+    html:not(:fullscreen) .width-as-field {
+        width: calc(#{$chromeFieldHeight} / 3 * 2);
+    }
+
+    html:not(:fullscreen) .height-as-field {
+        height: $chromeFieldHeight;
+    }
 }
 
 .my-button-group {
@@ -12,13 +35,17 @@ body {
 }
 
 button.my-button {
+    margin: 0;
     background-color: rgba(0, 0, 0, .05);
     border: $buttonBorder;
-    border-left: none;
     cursor: pointer;
 }
 
-*:first-child > button.my-button {
+.my-button-group button {
+    border-left: none;
+}
+
+.my-button-group *:first-child > button.my-button {
     border-left: $buttonBorder;
 }
 
@@ -35,14 +62,6 @@ button.my-toggle-active {
     font-family: $fontFamily;
     font-size: .7em;
     opacity: .5;
-}
-
-.width-as-field {
-    width: calc((100vh - 4em) / 3 * 2);
-}
-
-.height-as-field {
-    height: calc(100vh - 4em);
 }
 
 button.emoji {

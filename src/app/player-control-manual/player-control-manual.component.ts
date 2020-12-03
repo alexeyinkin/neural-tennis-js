@@ -6,7 +6,7 @@ import Player from '../Player';
     selector: 'app-player-control-manual',
     templateUrl: './player-control-manual.component.html',
 })
-export class PlayerControlManualComponent {
+export default class PlayerControlManualComponent {
     @Input() player!: Player;
     @Input() model!: ManualPlayerControlModel;
 }

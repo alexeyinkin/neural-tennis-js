@@ -5,6 +5,7 @@ import BallLostListener from './BallLostListener';
 import Color from './Color';
 import ExtrapolationCatchModel from './ExtrapolationCatchModel';
 import FrontKickModel from './FrontKickModel';
+import FullscreenControllerInterface from './FullscreenControllerInterface';
 import GoWhereTappedControlModel from './touch/GoWhereTappedControlModel';
 import KeyCodeEnum from './KeyCodeEnum';
 import ManualPlayerControlModel from './ManualPlayerControlModel';
@@ -33,6 +34,7 @@ export default class Engine {
     private objectMoveListeners: ObjectMoveListener[] = [];
 
     private timerId?: number;
+    private fullscreenController?: FullscreenControllerInterface;
 
     public constructor() {
         this.createBalls();
@@ -293,7 +295,7 @@ export default class Engine {
         this.timerId = setInterval(() => this.tick(), PhysicsEnum.TICK_INTERVAL_MS);
     }
 
-    private stopTicking(): void {
+    public stopTicking(): void {
         if (!this.timerId) {
             return;
         }
@@ -302,7 +304,7 @@ export default class Engine {
         this.timerId = undefined;
     }
 
-    private toggleTicking(): void {
+    public toggleTicking(): void {
         if (this.timerId) {
             this.stopTicking();
         } else {
@@ -310,10 +312,17 @@ export default class Engine {
         }
     }
 
+    public isTicking(): boolean {
+        return !!this.timerId;
+    }
+
     public handleKeyDown(code: string) {
         switch (code) {
             case 'Escape':
                 this.toggleTicking();
+                break;
+            case 'Enter':
+                this.toggleFullscreen();
                 break;
         }
 
@@ -390,5 +399,15 @@ export default class Engine {
 
     public getTouchDispatcher(): TouchDispatcher {
         return this.touchDispatcher;
+    }
+
+    public setFullscreenController(controller: FullscreenControllerInterface): void {
+        this.fullscreenController = controller;
+    }
+
+    public toggleFullscreen(): void {
+        if (this.fullscreenController) {
+            this.fullscreenController.toggleFullscreen();
+        }
     }
 }

@@ -1,4 +1,11 @@
 <app-player-control [player]="engine.getRedPlayer()"></app-player-control>
-<app-field [engine]="engine"></app-field>
+<div id="fieldContainer" class="width-as-field height-as-field">
+    <app-field [engine]="engine" (centerAreaClick)="handleFieldClick()"></app-field>
+    <app-controls
+        [engine]="engine"
+        [visible]="controlsToggled || !engine.isTicking()"
+        [fullscreenController]="this"
+    ></app-controls>
+</div>
 <app-player-control [player]="engine.getBluePlayer()"></app-player-control>
 <router-outlet></router-outlet>

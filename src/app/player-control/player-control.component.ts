@@ -6,6 +6,6 @@ import Player from '../Player';
     templateUrl: './player-control.component.html',
     styleUrls: ['./player-control.component.scss'],
 })
-export class PlayerControlComponent {
+export default class PlayerControlComponent {
     @Input() player!: Player;
 }

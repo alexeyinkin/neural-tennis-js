@@ -6,7 +6,7 @@ import Player from '../Player';
     selector: 'app-player-control-kick-model-buttons',
     templateUrl: './player-control-kick-model-buttons.component.html',
 })
-export class PlayerControlKickModelButtonsComponent {
+export default class PlayerControlKickModelButtonsComponent {
     @Input() player!: Player;
     @Input() model!: AiPlayerControlModel;
 }

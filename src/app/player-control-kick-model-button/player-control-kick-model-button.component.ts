@@ -8,7 +8,7 @@ import Player from '../Player';
     templateUrl: './player-control-kick-model-button.component.html',
     styleUrls: ['./player-control-kick-model-button.component.scss']
 })
-export class PlayerControlKickModelButtonComponent {
+export default class PlayerControlKickModelButtonComponent {
     @Input() player!: Player;
     @Input() model!: AiPlayerControlModel;
     @Input() kickModel!: AbstractKickModel;

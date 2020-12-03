@@ -6,7 +6,7 @@ import Player from '../Player';
     selector: 'app-player-control-ai',
     templateUrl: './player-control-ai.component.html',
 })
-export class PlayerControlAiComponent {
+export default class PlayerControlAiComponent {
     @Input() player!: Player;
     @Input() model!: AiPlayerControlModel;
 }

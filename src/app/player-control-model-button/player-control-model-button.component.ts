@@ -6,7 +6,7 @@ import Player from '../Player';
     selector: 'app-player-control-model-button',
     templateUrl: './player-control-model-button.component.html',
 })
-export class PlayerControlModelButtonComponent {
+export default class PlayerControlModelButtonComponent {
     @Input() player!: Player;
     @Input() model!: AbstractPlayerControlModel;
 

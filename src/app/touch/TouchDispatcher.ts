@@ -14,10 +14,10 @@ export default class TouchDispatcher {
 
     public constructor(private engine: Engine) {}
 
-    public handleTouchStart(touches: TouchList, fieldPositions: Vector[]): void {
-        this.storePlayerIdsForNewTouches(touches, fieldPositions);
+    public handleTouchStart(changedTouches: TouchList, fieldPositions: Vector[]): void {
+        this.storePlayerIdsForNewTouches(changedTouches, fieldPositions);
 
-        let playersTouches = this.sortTouchesToPlayers(touches, fieldPositions);
+        let playersTouches = this.sortTouchesToPlayers(changedTouches, fieldPositions);
 
         for (const playerTouches of playersTouches) {
             let model = this.getTouchModelByPlayerId(playerTouches.playerId);
@@ -28,11 +28,8 @@ export default class TouchDispatcher {
     private storePlayerIdsForNewTouches(touches: TouchList, fieldPositions: Vector[]): void {
         for (let i = touches.length; --i >= 0; ) {
             let touch = touches[i];
-
-            if (!this.touchIdsToPlayerIds.has(touch.identifier)) {
-                let player = this.getPlayerByTouchStartPosition(fieldPositions[i]);
-                this.touchIdsToPlayerIds.set(touch.identifier, player ? player.getId() : undefined);
-            }
+            let player = this.getPlayerByTouchStartPosition(fieldPositions[i]);
+            this.touchIdsToPlayerIds.set(touch.identifier, player ? player.getId() : undefined);
         }
     }
 
@@ -118,5 +115,15 @@ export default class TouchDispatcher {
         }
 
         return undefined;
+    }
+
+    public isAtLeastOneTouchMissingPlayerArea(touches: TouchList): boolean {
+        for (let i = touches.length; --i >= 0; ) {
+            if (!this.touchIdsToPlayerIds.get(touches[i].identifier)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

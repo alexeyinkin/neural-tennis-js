@@ -7,7 +7,7 @@ import NeuralCatchModel from '../NeuralCatchModel';
     selector: 'app-player-control-neural',
     templateUrl: './player-control-neural.component.html',
 })
-export class PlayerControlNeuralComponent {
+export default class PlayerControlNeuralComponent {
     @Input() model!: NeuralCatchModel;
 
     public handleSave(): void {
