@@ -10,6 +10,7 @@ import AiModelInWorkerListener from './worker/AiModelInWorkerListener';
 import Ball from './Ball';
 import BallKickedListener from './BallKickedListener';
 import BallLostListener from './BallLostListener';
+import ChartContainerProviderInterface from './ChartContainerProviderInterface';
 import Engine from './Engine';
 import MyTensorFlowLib from './MyTensorFlowLib';
 import ObjectMoveListener from './ObjectMoveListener';
@@ -30,7 +31,8 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
     private labelHistory: number[][] = [];
 
     private errors: number[] = [];
-    private rollingErrorsCount = [1, 5];
+    //private rollingErrorsCount = [1, 5];
+    private rollingErrorsCount = [1]; // Drawing the chart is a bottleneck, so skip rolling 5 for now.
     private rollingErrorsPlotValues = new Map<number, PointInterface[]>();
 
     private lossValues: number[] = [];
@@ -42,6 +44,7 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
     ];
 
     private modelInWorker: AiModelInWorker;
+    private chartContainerProvider?: ChartContainerProviderInterface;
 
     public constructor(engine: Engine, player: Player) {
         super(engine, player);
@@ -68,8 +71,6 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
         engine.addBallLostListener(this);
         engine.addBallKickedListener(this);
         engine.addObjectMoveListener(this);
-
-        this.plotLoss();
     }
 
     public getName(): string {
@@ -194,7 +195,12 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
     }
 
     private plotLoss(): void {
-        const container = {tab: this.getPlayer().getName(), name: 'MSE'};
+        if (!this.chartContainerProvider) return;
+        let container = this.chartContainerProvider.getChartContainer(String(this.getPlayer().getId()));
+        if (!container) return;
+
+        // Uncomment this to show charts in TensorFlow's built in side panel.
+        //const container = {tab: this.getPlayer().getName(), name: 'MSE'};
         let values = [];
         let series = [];
 
@@ -213,7 +219,8 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
         const opts = {
             xLabel: 'Balls observed',
             yLabel: '',
-            height: 300,
+            height: 200,    // TODO: Make adaptive. (With JS?)
+            width: 380,
         };
 
         tfvis.render.linechart(container, data, opts);
@@ -273,5 +280,9 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
 
         result.push(1);
         return result;
+    }
+
+    public setChartContainerProvider(provider?: ChartContainerProviderInterface): void {
+        this.chartContainerProvider = provider;
     }
 }

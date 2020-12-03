@@ -1,6 +1,6 @@
 import {Component, HostBinding, Input} from '@angular/core';
-import Player from "../Player";
-import PhysicsEnum from "../PhysicsEnum";
+import Player from '../Player';
+import PhysicsEnum from '../PhysicsEnum';
 
 @Component({
     selector: 'app-player-field',
@@ -60,5 +60,10 @@ export default class PlayerFieldComponent {
     @HostBinding('style.color')
     private get color(): string {
         return this.player.getColor().getRgba(this.textAlpha);
+    }
+
+    // TODO: Make a way to return the element itself and do not rely on cross-component element ID awareness.
+    public getChartDivId(): string {
+        return this.player.getId() + '-chart';
     }
 }

@@ -1,4 +1,5 @@
 import {Component, HostListener, OnInit} from '@angular/core';
+import ChartContainerProviderInterface from './ChartContainerProviderInterface';
 import Engine from './Engine';
 import FullscreenControllerInterface from './FullscreenControllerInterface';
 
@@ -7,13 +8,13 @@ import FullscreenControllerInterface from './FullscreenControllerInterface';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })
-export default class AppComponent implements OnInit, FullscreenControllerInterface {
+export default class AppComponent implements OnInit, FullscreenControllerInterface, ChartContainerProviderInterface {
     public engine: Engine;
     public controlsToggled = true;
     private hideControlsTimer: any;
 
     public constructor() {
-        this.engine = new Engine();
+        this.engine = new Engine(this);
         this.engine.setFullscreenController(this);
     }
 
@@ -77,5 +78,9 @@ export default class AppComponent implements OnInit, FullscreenControllerInterfa
     public ngOnInit(): void {
         this.engine.startTicking();
         this.setTimeoutToHideControls();
+    }
+
+    public getChartContainer(name: string): any {
+        return document.getElementById(name + '-chart');
     }
 }

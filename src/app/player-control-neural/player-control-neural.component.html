@@ -1,11 +1,15 @@
 <div class="my-button-group">
-    <button
-        class="my-button"
-        (click)="handleSave()"
-    >Save</button>
-    <button
-        class="my-button"
-        (click)="file.click()"
-    >Load</button>
+    <span>
+        <button
+            class="my-button"
+            (click)="handleSave()"
+        >{{getSaveIcon()}}</button>
+    </span>
+    <span>
+        <button
+            class="my-button"
+            (click)="file.click()"
+        >{{getLoadIcon()}}</button>
+    </span>
 </div>
 <input type="file" (change)="handleFileSelected(file)" style="display:none" #file/>

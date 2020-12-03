@@ -2,6 +2,7 @@ import AiPlayerControlModel from './AiPlayerControlModel';
 import Ball from './Ball';
 import BallKickedListener from './BallKickedListener';
 import BallLostListener from './BallLostListener';
+import ChartContainerProviderInterface from './ChartContainerProviderInterface';
 import Color from './Color';
 import ExtrapolationCatchModel from './ExtrapolationCatchModel';
 import FrontKickModel from './FrontKickModel';
@@ -36,7 +37,9 @@ export default class Engine {
     private timerId?: number;
     private fullscreenController?: FullscreenControllerInterface;
 
-    public constructor() {
+    public constructor(
+        private readonly chartContainerProvider: ChartContainerProviderInterface,
+    ) {
         this.createBalls();
         this.createPlayers();
 
@@ -177,7 +180,10 @@ export default class Engine {
         let model = new AiPlayerControlModel(this, player);
 
         model.addCatchModel(new ExtrapolationCatchModel(this, player));
-        model.addCatchModel(new NeuralCatchModel(this, player));
+
+        let neuralCatchModel = new NeuralCatchModel(this, player);
+        neuralCatchModel.setChartContainerProvider(this.chartContainerProvider);
+        model.addCatchModel(neuralCatchModel);
 
         model.addKickModel(new RandomKickModel(this, player));
         model.addKickModel(new FrontKickModel(this, player));

@@ -36,4 +36,16 @@ export default class PlayerControlNeuralComponent {
             this.model.import(json);
         } catch (ex) {}
     }
+
+    public getSaveIcon(): string {
+        return '\uD83D\uDCBE'; // 'Floppy Disk' emoji.
+    }
+
+    public getLoadIcon(): string {
+        return '\uD83D\uDCC2'; // 'Open File Folder' emoji.
+    }
+
+    public getChartIcon(): string {
+        return '\uD83D\uDCC9'; // 'Chart Decreasing' emoji.
+    }
 }
