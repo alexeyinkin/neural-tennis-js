@@ -22,6 +22,7 @@ import Vector from './Vector';
 
 export default class NeuralCatchModel extends AbstractCatchModel implements BallLostListener, BallKickedListener, ObjectMoveListener, AiModelInWorkerListener {
     private static DUMP_NAME = 'NeuralCatchModel';
+    private static CREATION_ATTEMPT_COUNT = 50;
 
     private expectedPositions = new Map<bigint, Vector>();
     private activeBallsData = new Map<bigint, number[][]>();
@@ -49,16 +50,7 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
     public constructor(engine: Engine, player: Player) {
         super(engine, player);
 
-        this.model = tf.sequential();
-        for (const layer of this.layers) {
-            this.model.add(tf.layers.dense(layer));
-        }
-
-        this.model.compile({
-            optimizer: tf.train.adam(),
-            loss: tf.losses.meanSquaredError,
-            metrics: ['mse'],
-        });
+        this.model = this.createTrainableNetwork();
 
         for (const n of this.rollingErrorsCount) {
             this.rollingErrorsPlotValues.set(n, []);
@@ -71,6 +63,33 @@ export default class NeuralCatchModel extends AbstractCatchModel implements Ball
         engine.addBallLostListener(this);
         engine.addBallKickedListener(this);
         engine.addObjectMoveListener(this);
+    }
+
+    private createTrainableNetwork(): Sequential {
+        for (let i = NeuralCatchModel.CREATION_ATTEMPT_COUNT; --i >= 0; ) {
+            let model = this.createNetwork();
+
+            if (MyTensorFlowLib.isTrainable(model)) {
+                return model;
+            }
+        }
+
+        throw 'Could not create a trainable model.';
+    }
+
+    private createNetwork(): Sequential {
+        let model = tf.sequential();
+        for (const layer of this.layers) {
+            model.add(tf.layers.dense(layer));
+        }
+
+        model.compile({
+            optimizer: tf.train.adam(),
+            loss: tf.losses.meanSquaredError,
+            metrics: ['mse'],
+        });
+
+        return model;
     }
 
     public getName(): string {

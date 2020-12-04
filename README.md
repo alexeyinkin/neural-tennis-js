@@ -33,7 +33,7 @@ Turn it on or off using buttons above and below the fields.
 
 A.I. has two models to trace the ball, and you can switch the two:
 - Linear model uses extrapolation to see where the ball will end up, and moves there. It is perfect in that.
-- Neural model initially gives random predictions but learns gradually. It starts to get it right after observing 50-100 balls and usually plays good after 200 balls.
+- Neural model initially gives random predictions but learns gradually. It starts to get it right after observing 100 balls and usually plays good after 200 balls.
 
 The chart show the neural network progress. One line shows how bad the last position was predicted. The other one shows log10 of the mean standard error among learned balls. As the log10(MSE) approaches -2 and goes below, it is pretty good.
 
@@ -70,15 +70,12 @@ Each player's neural network is trained in a separate worker so that it does not
 
 As we need predictions fast, we cannot wait for the network in the worker as it might be training. For that purpose `NeuralCatchModel` has a local copy of the same network which it uses for predictions. Each time the network in the worker finishes training, the worker sends new weights back to `NeuralCatchModel`, and the local model gets updated.
 
-## Known issues
-
-- The neural network is initialized randomly. For some reason in about 20% of runs it constantly gives `-0` prediction of the ball position and refuses to learn. This negative zero suggests some TensorFlow JS issues. Reload the game page if the neural model does not move the player from `x ≈ 0` after 20 balls.
-- Drawing the chart is the performance bottleneck. The chart uses `tfvis` library. It should be replaced with something faster. 
-
 ## Things to try if I or you have time
 
+- Speed up the learning against another A.I player. Such a simulation does not have to run in real time for humans with redrawing players and balls.
 - `NeuralKickModel` would be fun. It should use another neural network to determine kick direction. Gradually it would learn to tick to the farthest corner from the opponent.
 - Allow to change the network layout at runtime. Allow to load networks from dumps with different layouts.
+- Experiment with activation functions as currently ReLU can produce dead neurons. There's a nasty workaround involving calling `MyTensorFlowLib.isTrainable()` which prevents the entire network from starting up dead but many neurons are out of play anywhere.
 - Convert to a native app.
 
 ## How to Run
