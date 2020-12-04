@@ -39,7 +39,7 @@ A.I. has two models to trace the ball, and you can switch the two:
 
 A neural network starts with random weights. It may suffer from the [dead ReLU problem](https://datascience.stackexchange.com/questions/5706/what-is-the-dying-relu-problem-in-neural-networks) and hardly learn much. Or it may learn quickly.
 
-The chart show the neural network progress. One line shows how bad the last position was predicted. The other one shows log10 of the mean standard error among learned balls. As the log10(MSE) approaches -2 and goes below, it is pretty good.
+The chart shows the neural network progress. One line shows how bad the last position was predicted. The other one shows log10 of the mean standard error among learned balls. As the log10(MSE) approaches -2 and goes below, it is pretty good.
 
 If the log10(MSE) did not go below -1.5 after 50 balls and is not sloping down, then the network had poor initial weights and many dead neurons, and reloading the game should help.
 
@@ -78,14 +78,13 @@ As we need predictions fast, we cannot wait for the network in the worker as it 
 
 ## Things to try if I or you have time
 
-- Speed up the learning against another A.I player. Such a simulation does not have to run in real time for humans with redrawing players and balls.
-- `NeuralKickModel` would be fun. It should use another neural network to determine kick direction. Gradually it would learn to tick to the farthest corner from the opponent.
+- Speed up the learning against another A.I. player. Such a simulation does not have to run in real time for humans with redrawing players and balls.
+- `NeuralKickModel` would be fun. It should use another neural network to determine kick direction. Gradually it would learn to kick to the farthest corner from the opponent.
 - Allow to change the network layout at runtime. Allow to load networks from dumps with different layouts.
-- Experiment with activation functions as currently ReLU can produce dead neurons. There's a nasty workaround involving calling `MyTensorFlowLib.isTrainable()` which prevents the entire network from starting up dead but many neurons are out of play anywhere.
+- Experiment with activation functions as currently ReLU can produce dead neurons. There's a nasty workaround involving calling `MyTensorFlowLib.isTrainable()` which prevents the entire network from starting up dead but many neurons are out of play anyway.
 - Convert to a native app.
 
 ## How to Run
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.1.
 
 To build the project locally, you need to install Angular: https://angular.io/guide/setup-local
 
