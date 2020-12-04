@@ -35,7 +35,13 @@ A.I. has two models to trace the ball, and you can switch the two:
 - Linear model uses extrapolation to see where the ball will end up, and moves there. It is perfect in that.
 - Neural model initially gives random predictions but learns gradually. It starts to get it right after observing 100 balls and usually plays good after 200 balls.
 
+### Neural network prediction quality
+
+A neural network starts with random weights. It may suffer from the [dead ReLU problem](https://datascience.stackexchange.com/questions/5706/what-is-the-dying-relu-problem-in-neural-networks) and hardly learn much. Or it may learn quickly.
+
 The chart show the neural network progress. One line shows how bad the last position was predicted. The other one shows log10 of the mean standard error among learned balls. As the log10(MSE) approaches -2 and goes below, it is pretty good.
+
+If the log10(MSE) did not go below -1.5 after 50 balls and is not sloping down, then the network had poor initial weights and many dead neurons, and reloading the game should help.
 
 To have fun, train the network against the Linear extrapolation model, then take over and see how the network picks your style as well.
 
