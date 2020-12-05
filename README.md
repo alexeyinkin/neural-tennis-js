@@ -17,12 +17,14 @@ Live demo: [https://inkin.ru/software/neural-tennis-js/demo/](https://inkin.ru/s
 Keyboard:
 - Blue Player: Keyboard arrows.
 - Red Player: A, D, W, S (turn off A.I. first).
-- Pause: Escape.
+- Pause: Space.
 - Full Screen: Enter.
 
 On touchscreen devices:
 - Touch the field to move.
 - Touch the center area to show Pause and Full Screen buttons.
+
+Full Screen mode is not supported on iOS due to system restrictions.
 
 ## A.I. Features
 
@@ -78,6 +80,7 @@ As we need predictions fast, we cannot wait for the network in the worker as it 
 
 ## Things to try if I or you have time
 
+- Use canvas instead of DOM nodes for players, balls and field areas. DOM was only chosen for Angular practice. Canvas should be faster.
 - Speed up the learning against another A.I. player. Such a simulation does not have to run in real time for humans with redrawing players and balls.
 - `NeuralKickModel` would be fun. It should use another neural network to determine kick direction. Gradually it would learn to kick to the farthest corner from the opponent.
 - Allow to change the network layout at runtime. Allow to load networks from dumps with different layouts.

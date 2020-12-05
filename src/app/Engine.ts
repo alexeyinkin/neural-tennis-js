@@ -324,7 +324,7 @@ export default class Engine {
 
     public handleKeyDown(code: string) {
         switch (code) {
-            case 'Escape':
+            case 'Space':
                 this.toggleTicking();
                 break;
             case 'Enter':
